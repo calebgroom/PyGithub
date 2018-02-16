@@ -35,7 +35,7 @@ import github.NamedUser
 
 class Team(github.GithubObject.CompletableGithubObject):
     """
-    This class represents Teams. The reference can be found here http://developer.github.com/v3/orgs/teams/
+    This class represents Teams. The reference can be found here http://developer.github.com/v3/teams/
     """
 
     def __repr__(self):
@@ -113,21 +113,27 @@ class Team(github.GithubObject.CompletableGithubObject):
         self._completeIfNotSet(self._url)
         return self._url.value
 
-    def add_to_members(self, member):
+    def add_to_members(self, member, role=github.GithubObject.NotSet):
         """
-        :calls: `PUT /teams/:id/members/:user <http://developer.github.com/v3/orgs/teams>`_
+        :calls: `PUT /teams/:id/members/:user <http://developer.github.com/v3/teams>`_
         :param member: :class:`github.NamedUser.NamedUser`
+        :param role: string
         :rtype: None
         """
         assert isinstance(member, github.NamedUser.NamedUser), member
+        put_parameters = {}
+        if role is not github.GithubObject.NotSet:
+            put_parameters["role"] = role
+
         headers, data = self._requester.requestJsonAndCheck(
             "PUT",
-            self.url + "/members/" + member._identity
+            self.url + "/members/" + member._identity,
+            input=put_parameters
         )
 
     def add_membership(self, member):
         """
-        :calls: `PUT /teams/:id/memberships/:user <http://developer.github.com/v3/orgs/teams>`_
+        :calls: `PUT /teams/:id/memberships/:user <http://developer.github.com/v3/teams/members>`_
         :param member: :class:`github.Nameduser.NamedUser`
         :rtype: None
         """
@@ -139,7 +145,7 @@ class Team(github.GithubObject.CompletableGithubObject):
 
     def add_to_repos(self, repo):
         """
-        :calls: `PUT /teams/:id/repos/:org/:repo <http://developer.github.com/v3/orgs/teams>`_
+        :calls: `PUT /teams/:id/repos/:org/:repo <http://developer.github.com/v3/teams>`_
         :param repo: :class:`github.Repository.Repository`
         :rtype: None
         """
@@ -151,7 +157,7 @@ class Team(github.GithubObject.CompletableGithubObject):
 
     def set_repo_permission(self, repo, permission):
         """
-        :calls: `PUT /teams/:id/repos/:org/:repo <http://developer.github.com/v3/orgs/teams>`_
+        :calls: `PUT /teams/:id/repos/:org/:repo <http://developer.github.com/v3/teams>`_
         :param repo: :class:`github.Repository.Repository`
         :param permission: string
         :rtype: None
@@ -168,7 +174,7 @@ class Team(github.GithubObject.CompletableGithubObject):
 
     def delete(self):
         """
-        :calls: `DELETE /teams/:id <http://developer.github.com/v3/orgs/teams>`_
+        :calls: `DELETE /teams/:id <http://developer.github.com/v3/teams>`_
         :rtype: None
         """
         headers, data = self._requester.requestJsonAndCheck(
@@ -178,7 +184,7 @@ class Team(github.GithubObject.CompletableGithubObject):
 
     def edit(self, name, permission=github.GithubObject.NotSet):
         """
-        :calls: `PATCH /teams/:id <http://developer.github.com/v3/orgs/teams>`_
+        :calls: `PATCH /teams/:id <http://developer.github.com/v3/teams>`_
         :param name: string
         :param permission: string
         :rtype: None
@@ -199,7 +205,7 @@ class Team(github.GithubObject.CompletableGithubObject):
 
     def get_members(self, role=github.GithubObject.NotSet):
         """
-        :calls: `GET /teams/:id/members <http://developer.github.com/v3/orgs/teams>`_
+        :calls: `GET /teams/:id/members <http://developer.github.com/v3/teams/members>`_
         :param role: string
         :rtype: :class:`github.PaginatedList.PaginatedList` of :class:`github.NamedUser.NamedUser`
         """
@@ -217,7 +223,7 @@ class Team(github.GithubObject.CompletableGithubObject):
 
     def get_repos(self):
         """
-        :calls: `GET /teams/:id/repos <http://developer.github.com/v3/orgs/teams>`_
+        :calls: `GET /teams/:id/repos <http://developer.github.com/v3/teams>`_
         :rtype: :class:`github.PaginatedList.PaginatedList` of :class:`github.Repository.Repository`
         """
         return github.PaginatedList.PaginatedList(
@@ -229,7 +235,7 @@ class Team(github.GithubObject.CompletableGithubObject):
 
     def has_in_members(self, member):
         """
-        :calls: `GET /teams/:id/members/:user <http://developer.github.com/v3/orgs/teams>`_
+        :calls: `GET /teams/:id/members/:user <http://developer.github.com/v3/teams/members>`_
         :param member: :class:`github.NamedUser.NamedUser`
         :rtype: bool
         """
@@ -242,7 +248,7 @@ class Team(github.GithubObject.CompletableGithubObject):
 
     def has_in_repos(self, repo):
         """
-        :calls: `GET /teams/:id/repos/:owner/:repo <http://developer.github.com/v3/orgs/teams>`_
+        :calls: `GET /teams/:id/repos/:owner/:repo <http://developer.github.com/v3/teams>`_
         :param repo: :class:`github.Repository.Repository`
         :rtype: bool
         """
@@ -255,7 +261,7 @@ class Team(github.GithubObject.CompletableGithubObject):
 
     def remove_from_members(self, member):
         """
-        :calls: `DELETE /teams/:id/members/:user <http://developer.github.com/v3/orgs/teams>`_
+        :calls: `DELETE /teams/:id/members/:user <http://developer.github.com/v3/teams>`_
         :param member: :class:`github.NamedUser.NamedUser`
         :rtype: None
         """
@@ -267,7 +273,7 @@ class Team(github.GithubObject.CompletableGithubObject):
 
     def remove_from_repos(self, repo):
         """
-        :calls: `DELETE /teams/:id/repos/:owner/:repo <http://developer.github.com/v3/orgs/teams>`_
+        :calls: `DELETE /teams/:id/repos/:owner/:repo <http://developer.github.com/v3/teams>`_
         :param repo: :class:`github.Repository.Repository`
         :rtype: None
         """

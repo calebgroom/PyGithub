@@ -55,6 +55,19 @@ class Team(Framework.TestCase):
         self.assertListKeyEqual(self.team.get_members(), None, [])
         self.assertFalse(self.team.has_in_members(user))
 
+    def testMembersRoles(self):
+        user_one = self.g.get_user("jacquev6")
+        user_two = self.g.get_user("calebgroom")
+        self.assertListKeyEqual(self.team.get_members(), None, [])
+        self.team.add_to_members(user_one, role="maintainer")
+        self.team.add_to_members(user_two, role="member")
+        self.assertListKeyEqual(
+            self.team.get_members(role="maintainer"),
+            lambda u: u.login, ["jacquev6"])
+        self.team.remove_from_members(user_one)
+        self.team.remove_from_members(user_two)
+        self.assertListKeyEqual(self.team.get_members(), None, [])
+
     def testRepoPermission(self):
         repo = self.org.get_repo("FatherBeaver")
         self.team.set_repo_permission(repo, "admin")
